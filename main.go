@@ -9,24 +9,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-/*
-refer class 7 in taining folder
-
-Structure -> all exported firelds and json tags done
-interface for functionality like insert, readALl, readById -> optional
-implement interface on struct -> optional
-file 1 -> definitions like struct, db query done
-file 2 -> db connectivity done
-		Code copy paster from abover eg clss 7
-file 3 -> handler
-		refer class 7 -> 3 handler
-		getAll -> trigger getALl finction n return
-		GetById -> readId and return
-		insert -> read data and insert
-file 4 -> main
-*/
 func StartApiServer() {
 	mx := mux.NewRouter()
+	siteserver := http.FileServer(http.Dir("./CarUI"))
+	// mx.Handle("/", siteserver)
+
+	mx.Handle("/", siteserver)
+	mx.PathPrefix("/Content/").Handler(siteserver)
+	mx.PathPrefix("/Scripts/").Handler(siteserver)
 
 	mx.HandleFunc("/cars", internal.GetCarsData).Methods(http.MethodGet)
 	mx.HandleFunc("/cars/{id}", internal.GetCarsDataById).Methods(http.MethodGet)
